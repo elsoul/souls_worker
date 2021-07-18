@@ -1,5 +1,5 @@
-# SOULs Serverless GraphQL API Boilerplate
-SOULs Serverless GraphQL API Boilerplate
+# SOULs Serverless Pub/Sub Worker Boilerplate
+SOULs Serverless Pub/Sub Worker Boilerplate
 
 <p align="center">
 
