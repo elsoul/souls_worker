@@ -84,7 +84,7 @@ class SoulsApi < Sinatra::Base
 
   post "/endpoint" do
     query =
-      if ENV["RACK_ENV"] == production
+      if ENV["RACK_ENV"] == "production"
         Base64.decode64(params["message"]["data"]).force_encoding("UTF-8")
       else
         params[:query]

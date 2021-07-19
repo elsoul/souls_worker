@@ -1,5 +1,5 @@
 module Mutations
-  module Workers::Mailer
+  module Workers
     class SendUserMail < BaseMutation
       description "Mail を送信します。"
       field :response, String, null: false
@@ -7,7 +7,7 @@ module Mutations
       argument :text, String, required: true
       argument :user_id, Integer, required: true
 
-      def resolve(**_args)
+      def resolve(args)
         user = User.find(args[:user_id])
         html = ERB.new(" #{user.username} 様<br> #{args[:text]} ")
         mail = SendGrid::Mail.new
