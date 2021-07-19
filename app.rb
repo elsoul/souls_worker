@@ -83,24 +83,14 @@ class SoulsApi < Sinatra::Base
   end
 
   post "/endpoint" do
-    token = request.env["HTTP_AUTHORIZATION"].split("Bearer ")[1] if request.env["HTTP_AUTHORIZATION"]
-
-    user = token ? login_auth(token: token) : nil
-    context = { user: user }
-    result = SoulsApiSchema.execute(params[:query], variables: params[:variables], context: context)
+    query =
+      if ENV["RACK_ENV"] == production
+        Base64.decode64(params["message"]["data"]).force_encoding("UTF-8")
+      else
+        params[:query]
+      end
+    result = SoulsApiSchema.execute(query, variables: params[:variables])
     json(result)
-  rescue StandardError => e
-    message = { error: e }
-    json(message)
-  end
-
-  def login_auth(token:)
-    decoded_token = JsonWebToken.decode(token)
-    user_id = decoded_token[:user_id]
-    user = User.find(user_id)
-    raise(StandardError, "Invalid or Missing Token") if user.blank?
-
-    user
   rescue StandardError => e
     message = { error: e }
     json(message)
