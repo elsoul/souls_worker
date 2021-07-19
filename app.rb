@@ -1,6 +1,7 @@
 require "active_support"
 require "active_support/core_ext"
 require "erb"
+require "csv"
 require "jwt"
 require "json"
 require "sinatra"
@@ -89,10 +90,12 @@ class SoulsApi < Sinatra::Base
       else
         params[:query]
       end
-    result = SoulsApiSchema.execute(query, variables: params[:variables])
+
+    result = SoulsApiSchema.execute(query.to_s)
     json(result)
   rescue StandardError => e
-    message = { error: e }
+    NotificationEngine.send_slack_error(e.backtrace)
+    message = { error: e.backtrace }
     json(message)
   end
 end
